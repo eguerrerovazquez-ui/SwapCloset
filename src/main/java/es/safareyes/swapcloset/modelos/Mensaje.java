@@ -6,7 +6,7 @@ import lombok.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "mensaje", schema = "swapcloset")
+@Table(name = "mensaje")
 @Getter
 @Setter
 @EqualsAndHashCode

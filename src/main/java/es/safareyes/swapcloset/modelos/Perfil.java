@@ -7,7 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "perfil", schema = "swapcloset")
+@Table(name = "perfil")
 @Getter
 @Setter
 @EqualsAndHashCode

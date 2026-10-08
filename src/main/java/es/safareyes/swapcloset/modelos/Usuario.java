@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "usuario", schema = "swapcloset")
+@Table(name = "usuario")
 @Getter @Setter @EqualsAndHashCode @NoArgsConstructor @AllArgsConstructor @ToString
 public class Usuario {
 
