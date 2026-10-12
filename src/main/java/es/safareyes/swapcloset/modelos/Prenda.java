@@ -20,6 +20,10 @@ public class Prenda {
     @Column(name = "id")
     private Integer id;
 
+    @JoinColumn(name = "id_perfil")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Perfil perfil;
+
     @Column(name = "nombre")
     private String nombre;
 
