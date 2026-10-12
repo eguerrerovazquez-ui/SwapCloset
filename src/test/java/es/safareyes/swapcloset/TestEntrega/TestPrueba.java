@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -160,13 +165,122 @@ public class TestPrueba {
                 "id: " + e.getId()
                 + ", id_perfil" + e.getPerfil()
                 + ", nombre: " + e.getNombre()
-                + ", nombre: " + e.getNombre()
                 + ", descripcion: " + e.getDescripcion()
                 + ", talla: " + e.getTalla()
                 + ", modalidad: " + e.getModalidad()
                 + ", estado: " + e.getEstado()
                 + ", fecha de alta: " + e.getFechaalta()
-                + ", fecha de baja: " + e.getFechabaja()
         ));
+    }
+
+    @Test
+    void busquedaFiltrada(){
+        List<Prenda> prendas = prendaRepo.findByEstado(EstadosMensajes.BORRADOR);
+
+        System.out.println(">>> Prendas encontrados: " + prendas.size());
+        prendas.forEach(e -> System.out.println(
+                "nombre: " + e.getNombre()
+                + ", estado: " + e.getEstado()
+        ));
+
+    }
+
+    @Test
+    void infoPrenda(){
+        for (Object[] prenda : prendaRepo.detalleDePrenda(1)) {
+            Integer id = (Integer) prenda[0];
+            String url = (String) prenda[1];
+            String nombre = (String) prenda[2];
+            Integer valoracion = (Integer) prenda[3];
+            System.out.println("id: " + id + ", url: " + url + ", nombre: " + nombre + ", valoracion: " + valoracion);
+        }
+    }
+
+    @Test
+    void conteoPrendas(){
+        for (Object[] categorias : categoriaRepo.conteoDePrendas()) {
+            String nombre = (String) categorias[0];
+            Long cantidad = (Long) categorias[1];
+            System.out.println("Tipo: " + nombre + ", cantidad: " + cantidad);
+        }
+    }
+
+    @Test
+    void infoUsuario(){
+        for (Object[] usuario : userRepo.infoUsuario(1)) {
+            Integer id = (Integer) usuario[0];
+            String nombre = (String) usuario[1];
+            String tallaC = (String) usuario[2];
+            String tallaP =  (String) usuario[3];
+            String tallaCal =  (String) usuario[4];
+            BigDecimal reputacion  = (BigDecimal) usuario[5];
+            String estilos = (String) usuario[6];
+            String prendas = (String) usuario[7];
+            System.out.println("id: " + id
+                    + ", \nnombre: " + nombre
+                    + ", \ntalla de camiseta: " + tallaC
+                    + ", \ntalla de pantalones: " + tallaP
+                    + ", \ntalla de calzados: " + tallaCal
+                    + ", \nreputacion: " + reputacion
+                    + ", \nestilos: " + estilos
+                    + ", \nprendas: " + prendas
+            );
+        }
+    }
+
+    @Test
+    void estilosEnComun(){
+        for (Object[] perfinles : perfilRepo.perfilesConEstilosEnComun()){
+            String nombre = (String) perfinles[0];
+            BigDecimal reputacion = (BigDecimal) perfinles[1];
+            Long encomun = (Long) perfinles[2];
+            System.out.println("nombre: " + nombre
+                    + ", reputacion: " + reputacion
+                    + ", estilos en comun: " + encomun
+            );
+        }
+    }
+
+    @Test
+    void solicitudesEnCurso(){
+        for (Object[] solicitudes : solicitudRepo.solicitudesEnCurso(2)) {
+            String tipo = (String) solicitudes[0];
+            String estado = (String) solicitudes[1];
+            LocalDateTime fecha = (LocalDateTime) solicitudes[2];
+            System.out.println("tipo: " + tipo + ", estado: " + estado + ", fecha: " + fecha);
+        }
+    }
+
+    @Test
+    void chats(){
+        for (Object[] mensajes : mensajeRepo.mensajes(1,2)){
+            for (int i=0; mensajes.length>i;i++){
+                String mensaje = (String) mensajes[i];
+                System.out.println(mensaje);
+            }
+        }
+    }
+
+    @Test
+    void estadisticasPorCategoriaYMes() {
+        Map<String, int[]> acumulado = new LinkedHashMap<>();
+
+        for (Object[] f : prendaRepo.publicacionesPorCategoriaYMes())
+            acumulado.computeIfAbsent(f[0] + "|" + f[1], k -> new int[3])[0] += ((Number) f[2]).intValue();
+
+        for (Object[] f : solicitudRepo.intercambiosPorCategoriaYMes())
+            acumulado.computeIfAbsent(f[0] + "|" + f[1], k -> new int[3])[1] += ((Number) f[2]).intValue();
+
+        for (Object[] f : solicitudRepo.prestamosPorCategoriaYMes())
+            acumulado.computeIfAbsent(f[0] + "|" + f[1], k -> new int[3])[2] += ((Number) f[2]).intValue();
+
+        for (Map.Entry<String, int[]> e : acumulado.entrySet()) {
+            String[] p = e.getKey().split("\\|");
+            int[] v = e.getValue();
+            System.out.printf(
+                    "categoria: %-12s mes: %-7s publicaciones: %d, intercambios: %d, prestamos: %d%n",
+                    p[0], p[1], v[0], v[1], v[2]
+            );
+        }
     }
 }
