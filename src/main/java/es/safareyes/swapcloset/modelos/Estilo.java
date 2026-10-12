@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "mensaje")
+@Table(name = "estilo")
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -23,9 +23,6 @@ public class Estilo {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo")
     private TipoEstilo tipo;
-
-    @Column(name = "perfil_estilos")
-    private String perfilEstilos;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "perfil_estilo",
