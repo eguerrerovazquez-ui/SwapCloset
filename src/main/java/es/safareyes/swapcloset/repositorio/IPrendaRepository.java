@@ -3,11 +3,13 @@ package es.safareyes.swapcloset.repositorio;
 import es.safareyes.swapcloset.modelos.Estados;
 import es.safareyes.swapcloset.modelos.EstadosMensajes;
 import es.safareyes.swapcloset.modelos.Prenda;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
 
@@ -39,5 +41,7 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
     """, nativeQuery = true)
     List<Object[]> publicacionesPorCategoriaYMes();
 
+    @EntityGraph(attributePaths = {"perfil", "perfil.id_usuario"})
+    Optional<Prenda> findWithPerfilById(Integer id);
     //1 de 3 para la consulta grande
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,11 @@ public class PrendaServiceImpl implements PrendaService {
 
     @Override
     public PrendaResponse obtenerDetalle(Integer id) {
-        return null;
+        Prenda prenda = prendaRepository.findWithPerfilById(id)
+                .orElseThrow(() -> new RuntimeException("Prenda no encontrada"));
+
+        return PrendaMapper.toResponse(prenda, Collections.emptyList(), Collections.emptyList());
+
     }
 
     @Override
