@@ -2,12 +2,14 @@ package es.safareyes.swapcloset.repositorio;
 
 
 import es.safareyes.swapcloset.modelos.Usuario;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
@@ -31,4 +33,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Integer> {
                 WHERE u.id = :id;
                 """, nativeQuery = true)
     List<Object[]> infoUsuario(@Param("id") Integer id);
+
+    @EntityGraph(attributePaths = {"perfil", "perfil.estilos", "perfil.prendas"})
+    Optional<Usuario> findWithPerfilEstilosAndPrendasById(Integer id);
 }

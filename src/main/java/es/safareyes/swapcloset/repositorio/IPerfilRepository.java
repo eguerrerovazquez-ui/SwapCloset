@@ -22,4 +22,6 @@ public interface IPerfilRepository extends JpaRepository<Perfil, Integer> {
                     ORDER BY estilos_en_comun DESC, a.reputacion DESC
                     """, nativeQuery = true)
     List<Object[]> perfilesConEstilosEnComun();
+
+    Perfil findByIdUsuario(Integer id);
 }
