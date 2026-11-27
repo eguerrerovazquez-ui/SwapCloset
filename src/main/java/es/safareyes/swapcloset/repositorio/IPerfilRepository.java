@@ -23,5 +23,6 @@ public interface IPerfilRepository extends JpaRepository<Perfil, Integer> {
                     """, nativeQuery = true)
     List<Object[]> perfilesConEstilosEnComun();
 
-    Perfil findByIdUsuario(Integer id);
+    @Query("SELECT p FROM Perfil p WHERE p.id_usuario.id = :id")
+    Perfil findByUsuarioId(Integer id);
 }
